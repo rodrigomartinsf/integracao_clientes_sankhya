@@ -74,7 +74,7 @@ class AppController {
         //Caso contrário, Cadastra o cliente
         else{
           await db.clientes.create(novoCliente)
-          console.log('Novo cliente Cadastrado', listaClientes[i].nome_parceiro)
+          console.log('Novo cliente Cadastrado', novoCliente.getNomeParceiro())
         }
       }
     } catch (error) {
