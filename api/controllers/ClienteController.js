@@ -1,63 +1,202 @@
-const axios = require('axios').default
 
-class ClienteController {
-  constructor(jsessionid){
-    this.jsessionid = jsessionid
-    this.headers = {'Cookie': `JSESSIONID=${jsessionid}`}
-    this.url = "http://navecunha.nuvemdatacom.com.br:9665/mge/service.sbr?serviceName=CRUDServiceProvider.loadRecords&outputType=json"
-    this.body = {"serviceName": "CRUDServiceProvider.loadRecords","requestBody": {"dataSet": {"rootEntity": "Parceiro","includePresentationFields": 
-                         "N","offsetPage": "0","criteria": {"expression": {"$": "this.CLIENTE = 'S'"}},"entity": {"fieldset": {
-                         "list": "CODPARC,RAZAOSOCIAL,NOMEPARC,TIPPESSOA,CGC_CPF,IDENTINSCESTAD,DTNASC,CODVEND,PRAZOPAG,CEP,COMPLEMENTO,CODBAI,CODCID,CODTAB,BLOQUEAR,ATIVO,CODEND,NUMEND,LATITUDE,LONGITUDE"}}}}}
+class ClienteController{
+
+  constructor(codigoParceiro, razao_social, nome_parceiro, tipo_pessoa, cgc_cpf, inscricao_estadual, data_nascimento, rota, prazo, cep, complemento, 
+              bairro, cidade, tabela_preco, bloquear, ativo, endereco, numero, latitude, longitude) {
+    this.codigo_parceiro =  codigoParceiro
+    this.razao_social = razao_social
+    this.nome_parceiro = nome_parceiro
+    this.tipo_pessoa = tipo_pessoa
+    this.cgc_cpf = cgc_cpf
+    this.inscricao_estadual = inscricao_estadual
+    this.data_nascimento = data_nascimento
+    this.rota = rota
+    this.prazo = prazo
+    this.cep = cep
+    this.complemento = complemento
+    this.bairro = bairro
+    this.cidade = cidade
+    this.estado = null
+    this.tabela_preco = tabela_preco
+    this.bloquear = bloquear
+    this.ativo = ativo
+    this.endereco = endereco
+    this.numero = numero
+    this.latitude = latitude
+    this.longitude = longitude
   }
 
-  getHeaders(){
-    return this.headers
+  //GET
+  getCodigoParceiro() {
+    return this.codigo_parceiro
   }
-    
-  getUrl(){
-    return this.url
-  }
-
-  getBody(){
-    return this.body
+  
+  getRazaoSocial() {
+    return this.razao_social
   }
 
-  async getAll() {
-    let i = 0
-    const listaClientes = []
-    try {
-      const res = await axios.post(this.getUrl(), this.getBody(), { headers: this.getHeaders() } )
-      const clientes =  Object.values(res.data.responseBody.entities.entity) 
-      clientes.forEach(cliente => {
-        listaClientes[i] = {'codigo_parceiro': cliente['f0']['$'], 
-                            'razao_social': cliente['f1']['$'],
-                            'nome_parceiro': cliente['f2']['$'],
-                            'tipo_pessoa': cliente['f3']['$'],
-                            'cgc_cpf': cliente['f4']['$'],
-                            'inscricao_estadual': cliente['f5']['$'],
-                            'data_nascimento': cliente['f6']['$'],
-                            'rota': cliente['f7']['$'],
-                            'prazo': cliente['f8']['$'],
-                            'cep': cliente['f9']['$'],
-                            'complemento': cliente['f10']['$'],
-                            'bairro': cliente['f11']['$'],
-                            'cidade': cliente['f12']['$'],
-                            'tabela_preco': cliente['f13']['$'],
-                            'bloquear': cliente['f14']['$'],
-                            'ativo': cliente['f15']['$'],
-                            'endereco': cliente['f16']['$'],
-                            'numero': cliente['f17']['$'],
-                            'latitude': cliente['f18']['$'],
-                            'longitude': cliente['f19']['$']
-                            }
-        i++
-        return listaClientes
-        })
-      return listaClientes
-    } catch (error) {
-      console.log('Erro de conexão com a API')
-    }
-    
+  getNomeParceiro() {
+    return this.razao_social
   }
+
+  getTipoPessoa() {
+    return this.tipo_pessoa
+  }
+
+  getCgcCpf() {
+    return this.cgc_cpf
+  }
+
+  getInscricaoEstadual() {
+    return this.inscricao_estadual
+  }
+
+  getDataNascimento() {
+    return this.data_nascimento
+  }
+
+  getRota() {
+    return this.rota
+  }
+
+  getPrazo() {
+    return this.prazo
+  }
+
+  getCep() {
+    return this.cep
+  }
+
+  getComplemento() {
+    return this.complemento
+  }
+
+  getBairro() {
+    return this.bairro
+  }
+
+  getCidade() {
+    return this.cidade
+  }
+
+  getEstado() {
+    return this.estado
+  }
+
+  getTabelaPreco() {
+    return this.tabela_preco
+  }
+
+  getBloquear() {
+    return this.bloquear
+  }
+
+  getAtivo() {
+    return this.ativo
+  }
+
+  getEndereco() {
+    return this.endereco
+  }
+
+  getNumero() {
+    return this.numero
+  }
+
+  getLatitude() {
+    return this.latitude
+  }
+
+  getLongitude() {
+    return this.longitude
+  }
+
+//SET
+
+setCodigoParceiro(newValue) {
+  this.codigo_parceiro = newValue
 }
+
+setRazaoSocial(newValue) {
+  this.razao_social = newValue
+}
+
+setNomeParceiro(newValue) {
+  this.nome_parceiro = newValue
+}
+
+setTipoPessoa(newValue) {
+  this.tipo_pessoa = newValue
+}
+
+setCgcCpf(newValue) {
+  this.cgc_cpf = newValue
+}
+
+setInscricaoEstadual(newValue) {
+  this.inscricao_estadual = newValue
+}
+
+setDataNascimento(newValue) {
+  this.data_nascimento = newValue
+}
+
+setRota(newValue) {
+  this.rota = newValue
+}
+
+setPrazo(newValue) {
+  this.prazo = newValue
+}
+
+setCep(newValue) {
+  this.cep = newValue
+}
+
+setComplemento(newValue) {
+  this.complemento = newValue
+}
+
+setBairro(newValue) {
+  this.bairro = newValue
+}
+
+setCidade(newValue) {
+  this.cidade = newValue
+}
+
+setEstado(newValue) {
+  this.estado = newValue
+}
+
+setTabelaPreco(newValue) {
+  this.tabela_preco = newValue
+}
+
+setBloquear(newValue) {
+  this.bloquear = newValue
+}
+
+setAtivo(newValue) {
+  this.ativo = newValue
+}
+
+setEndereco(newValue) {
+  this.endereco = newValue
+}
+
+setNumero(newValue) {
+  this.numero = newValue
+}
+
+setLatitude(newValue) {
+  this.latitude = newValue
+}
+
+setLongitude(newValue) {
+  this.longitude = newValue
+}
+
+}
+
 module.exports = ClienteController

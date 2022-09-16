@@ -1,6 +1,6 @@
 const axios = require('axios').default
 
-class EnderecoController {
+class EnderecoServiceController {
 
   constructor(jsessionid, codigoEndereco) {
     this.jsessionid = jsessionid
@@ -35,4 +35,4 @@ class EnderecoController {
 
 }
 
-module.exports = EnderecoController
+module.exports = EnderecoServiceController

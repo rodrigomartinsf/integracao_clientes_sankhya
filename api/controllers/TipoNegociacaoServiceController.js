@@ -1,6 +1,6 @@
 const axios = require('axios').default
 
-class TipoNegociacaoController {
+class TipoNegociacaoServiceController {
 
   constructor(jsessionid, codigoParceiro) {
     this.jsessionid = jsessionid
@@ -29,10 +29,11 @@ class TipoNegociacaoController {
 
   async searchTipoNegociacaoByCodigoParceiro() {
     const res = await axios.post(this.getUrl(), this.getBody(), { headers: this.getHeaders() })
-    const tipoNegociacao = res.data.responseBody.entities.entity.f0.$
+    let tipoNegociacao = res.data.responseBody.entities.entity.f0.$
+    tipoNegociacao == 0 ? tipoNegociacao = 11 : tipoNegociacao = tipoNegociacao
     return tipoNegociacao
   }
 
 }
 
-module.exports = TipoNegociacaoController
+module.exports = TipoNegociacaoServiceController

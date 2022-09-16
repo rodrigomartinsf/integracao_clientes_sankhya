@@ -1,6 +1,6 @@
 const axios = require('axios').default
 
-class AuthController {
+class AuthServiceController {
 
   constructor() {
     this.user =  process.env.SANKHYA_USER
@@ -46,4 +46,4 @@ class AuthController {
 
 }
 
-module.exports = new AuthController()
+module.exports = new AuthServiceController()
