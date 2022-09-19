@@ -36,7 +36,7 @@ class ClienteServiceController {
                             'cgc_cpf': cliente['f4']['$'],
                             'inscricao_estadual': cliente['f5']['$'],
                             'data_nascimento': cliente['f6']['$'],
-                            'rota': cliente['f7']['$'],
+                            'rotaId': cliente['f7']['$'],
                             'prazo': cliente['f8']['$'],
                             'cep': cliente['f9']['$'],
                             'complemento': cliente['f10']['$'],
