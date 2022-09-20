@@ -1,3 +1,4 @@
+const ClienteService = require('../services/ClienteService')
 const db = require('../models')
 
 class ClienteController {
