@@ -18,7 +18,7 @@ class ClienteController {
     return listaClientes
   }
 
-  async sendClientes() {
+  async sendClientesToDatabase() {
     try {
       const listaClientes = await this.pegaListaDeClientes()
       //Verifica se o cliente já esta no banco de dados

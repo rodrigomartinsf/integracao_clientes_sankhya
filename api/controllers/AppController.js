@@ -12,15 +12,7 @@ class AppController {
   async start() {
     this.jsessionId = await AuthService.logon()
     this.clienteController = new ClienteController(this.jsessionId)
-    this.insert()
-  }
-
-  async insert() {
-    this.sendClientesToDatabase()
-  }
-
-  async sendClientesToDatabase() {
-    await this.clienteController.sendClientes()
+    await this.clienteController.sendClientesToDatabase()
     await AuthService.logout()
   }
 }
