@@ -1,6 +1,6 @@
 const axios = require('axios').default
 
-class TipoNegociacaoServiceController {
+class TipoNegociacaoService {
 
   constructor(jsessionid, codigoParceiro) {
     this.jsessionid = jsessionid
@@ -36,4 +36,4 @@ class TipoNegociacaoServiceController {
 
 }
 
-module.exports = TipoNegociacaoServiceController
+module.exports = TipoNegociacaoService

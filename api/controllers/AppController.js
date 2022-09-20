@@ -1,8 +1,9 @@
-const AuthServiceController = require('./AuthServiceController')
-const ClienteServiceController = require('./ClienteServiceController')
-const CidadeServiceController = require('./CidadeServiceController')
-const EnderecoServiceController = require('./EnderecoServiceController')
-const TipoNegociacaoServiceController = require('./TipoNegociacaoServiceController')
+const AuthService = require('../services/AuthService')
+const ClienteService = require('../services/ClienteService')
+const CidadeService = require('../services/CidadeService')
+const EnderecoService = require('../services/EnderecoService')
+const TipoNegociacaoService = require('../services/TipoNegociacaoService')
+const ClienteSchema = require('../schemas/ClienteSchema')
 const ClienteController = require('./ClienteController')
 const db = require('../models')
 
@@ -11,30 +12,33 @@ class AppController {
 
   constructor() {
     this.start()
+    this.jsessionId = null
+    this.clienteService = null
+    this.clienteController = null
   }
 
-  start() {
+  async start() {
+    this.jsessionId = await AuthService.logon()
+    this.clienteController = new ClienteController(this.jsessionId)
+    this.clienteService = new ClienteService(this.jsessionId)
     this.insert()
   }
 
   async insert() {
-    this.getClientesFromApi()
+    this.sendClientesToDatabase()
   }
 
-  async getClientesFromApi() {
+  async sendClientesToDatabase() {
     try {
-      const jsessionId = await AuthServiceController.logon()
-      const clienteService = new ClienteServiceController(jsessionId)
-      const listaClientes = await clienteService.getAll()
-
+      const listaClientes = await this.clienteService.getAll()
       //Verifica se o cliente já esta no banco de dados
       for (let i = 0; i < listaClientes.length; i++) {
-        const novoCliente = new ClienteController(listaClientes[i].codigo_parceiro, listaClientes[i].razao_social, listaClientes[i].nome_parceiro, listaClientes[i].tipo_pessoa, 
+        const novoCliente = new ClienteSchema(listaClientes[i].codigo_parceiro, listaClientes[i].razao_social, listaClientes[i].nome_parceiro, listaClientes[i].tipo_pessoa, 
                                               listaClientes[i].cgc_cpf, listaClientes[i].inscricao_estadual, listaClientes[i].data_nascimento, listaClientes[i].rotaId, 
                                               listaClientes[i].prazo, listaClientes[i].cep, listaClientes[i].complemento, listaClientes[i].bairro, listaClientes[i].cidade, 
                                               listaClientes[i].tabela_preco, listaClientes[i].bloquear, listaClientes[i].ativo, listaClientes[i].endereco, listaClientes[i].numero, 
                                               listaClientes[i].latitude, listaClientes[i].longitude)
-        let clienteModel = await db.clientes.findOne({
+        const clienteModel = await db.clientes.findOne({
           where: {
             codigo_parceiro: novoCliente.getCodigoParceiro()
           }
@@ -43,7 +47,7 @@ class AppController {
         //Busca a cidade e bairro de cada cliente
         let cidadeId = novoCliente.getCidade()
         let bairroId = novoCliente.getBairro()
-        const cidadeService = new CidadeServiceController(jsessionId, cidadeId, bairroId)
+        const cidadeService = new CidadeService(this.jsessionId, cidadeId, bairroId)
         let cidadeEstado = await cidadeService.searchCidadeByCodigo()
         let bairroDescricao = await cidadeService.searchBairroByCodigo()
         novoCliente.setCidade(cidadeEstado.cidade)
@@ -51,13 +55,13 @@ class AppController {
         novoCliente.setBairro(bairroDescricao)
 
         //Busca o endereço de cada cliente
-        let enderecoId = listaClientes[i].endereco
-        const enderecoService = new EnderecoServiceController(jsessionId, enderecoId)
+        let enderecoId = novoCliente.getEndereco()
+        const enderecoService = new EnderecoService(this.jsessionId, enderecoId)
         let enderecoDescricao = await enderecoService.searchEnderecoByCodigo()
         novoCliente.setEndereco(enderecoDescricao)
         
         //Busca o tipo de negociação de cada cliente
-        const tipoNegociacaoService = new TipoNegociacaoServiceController(jsessionId, novoCliente.getCodigoParceiro())
+        const tipoNegociacaoService = new TipoNegociacaoService(this.jsessionId, novoCliente.getCodigoParceiro())
         const tipoNegociacaoDescricao = await tipoNegociacaoService.searchTipoNegociacaoByCodigoParceiro()
         novoCliente.setPrazo(tipoNegociacaoDescricao)
         
@@ -81,7 +85,7 @@ class AppController {
         console.log('Erro ao recuperar os clientes da API do Sankhya')
         console.log(error)
     }
-    await AuthServiceController.logout()
+    await AuthService.logout()
   }
 }
 

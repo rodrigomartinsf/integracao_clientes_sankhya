@@ -1,6 +1,6 @@
 const axios = require('axios').default
 
-class CidadeServiceController {
+class CidadeService {
 
   constructor(jsessionid, codigoCidade, codigoBairro) {
     this.jsessionid = jsessionid
@@ -59,4 +59,4 @@ class CidadeServiceController {
       
 }
 
-module.exports = CidadeServiceController
+module.exports = CidadeService

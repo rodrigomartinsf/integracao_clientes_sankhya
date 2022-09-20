@@ -1,6 +1,6 @@
 const axios = require('axios').default
 
-class ClienteServiceController {
+class ClienteService {
   constructor(jsessionid){
     this.jsessionid = jsessionid
     this.headers = {'Cookie': `JSESSIONID=${jsessionid}`}
@@ -60,4 +60,4 @@ class ClienteServiceController {
     
   }
 }
-module.exports = ClienteServiceController
+module.exports = ClienteService
