@@ -1,9 +1,8 @@
 const ClienteService = require('../services/ClienteService')
-const CidadeService = require('../services/CidadeService')
 const EnderecoService = require('../services/EnderecoService')
 const TipoNegociacaoService = require('../services/TipoNegociacaoService')
 const ClienteSchema = require('../schemas/ClienteSchema')
-
+const CidadeController = require('./CidadeController')
 const db = require('../models')
 
 class ClienteController {
@@ -11,6 +10,7 @@ class ClienteController {
   constructor(jsessionId) {
     this.jsessionId = jsessionId
     this.clienteService = new ClienteService(jsessionId)
+    this.cidadeController = new CidadeController(jsessionId)
   }
 
   async pegaListaDeClientes() {
@@ -60,9 +60,10 @@ class ClienteController {
     //Busca a cidade e bairro de cada cliente
     let cidadeId = clienteSchema.getCidade()
     let bairroId = clienteSchema.getBairro()
-    const cidadeService = new CidadeService(this.jsessionId, cidadeId, bairroId)
-    let cidadeEstado = await cidadeService.searchCidadeByCodigo()
-    let bairroDescricao = await cidadeService.searchBairroByCodigo()
+    this.cidadeController.setCidadeSankhyaId(cidadeId)
+    this.cidadeController.setBairroSankhyaId(bairroId)
+    let cidadeEstado = await this.cidadeController.getCidadeDescSankhya()
+    let bairroDescricao = await this.cidadeController.getBairroDescSankhya()
     clienteSchema.setCidade(cidadeEstado.cidade)
     clienteSchema.setEstado(cidadeEstado.estado)
     clienteSchema.setBairro(bairroDescricao)

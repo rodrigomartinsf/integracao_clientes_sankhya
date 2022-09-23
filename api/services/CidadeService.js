@@ -2,16 +2,12 @@ const axios = require('axios').default
 
 class CidadeService {
 
-  constructor(jsessionid, codigoCidade, codigoBairro) {
+  constructor(jsessionid) {
     this.jsessionid = jsessionid
     this.headers = {'Cookie': `JSESSIONID=${jsessionid}`}
     this.url = "http://navecunha.nuvemdatacom.com.br:9665/mge/service.sbr?serviceName=CRUDServiceProvider.loadRecords&outputType=json"
-    this.bodyCidade = {"serviceName": "CRUDServiceProvider.loadRecords","requestBody": {"dataSet": {"rootEntity": "Cidade","includePresentationFields": "S","offsetPage": "0","criteria": {
-                        "expression": {"$": "this.CODCID = " + codigoCidade}},"entity": {"fieldset": {"list": "NOMECID,UF"}}}}}
-    this.bodyBairro = {"serviceName": "CRUDServiceProvider.loadRecords","requestBody": {"dataSet": {"rootEntity": "Bairro","includePresentationFields": "N","offsetPage": "0","criteria": {
-                        "expression": {"$": "this.CODBAI = " + codigoBairro }},"entity": {"fieldset": {"list": "CODBAI,NOMEBAI"}}}}}
-    this.codigoCidade = codigoCidade
-    this.codigoBairro = codigoBairro
+    this.codigoCidade = null
+    this.codigoBairro = null
   }
 
   getHeaders(){
@@ -38,13 +34,33 @@ class CidadeService {
     return this.codigoBairro
   }
 
+  setCodigoCidade(newValue){
+    this.codigoCidade = newValue
+    this.setBodyCidade()
+  }
+
+  setCodigoBairro(newValue){
+    this.codigoBairro = newValue
+    this.setBodyBairro()
+  }
+
+  setBodyCidade() {
+    this.bodyCidade = {"serviceName": "CRUDServiceProvider.loadRecords","requestBody": {"dataSet": {"rootEntity": "Cidade","includePresentationFields": "S","offsetPage": "0","criteria": {
+                       "expression": {"$": "this.CODCID = " + this.getCodigoCidade()}},"entity": {"fieldset": {"list": "NOMECID,UF"}}}}}
+  }
+
+  setBodyBairro() {
+    this.bodyBairro = {"serviceName": "CRUDServiceProvider.loadRecords","requestBody": {"dataSet": {"rootEntity": "Bairro","includePresentationFields": "N","offsetPage": "0","criteria": {
+                       "expression": {"$": "this.CODBAI = " + this.getCodigoBairro() }},"entity": {"fieldset": {"list": "CODBAI,NOMEBAI"}}}}}
+  }
+
   async searchCidadeByCodigo() {
     try {
       const res = await axios.post(this.getUrl(), this.getBodyCidade(), { headers: this.getHeaders() })
       let cidadeEstado = {'cidade': res.data.responseBody.entities.entity.f0.$, 'estado': res.data.responseBody.entities.entity.f3.$}
       return cidadeEstado
     } catch (error) {
-      console.log('Erro de conexão com a API de cidades')
+      console.log('Erro de conexão com a API de cidades', error)
     }
   }
 
