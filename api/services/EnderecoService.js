@@ -7,8 +7,7 @@ class EnderecoService {
     this.headers = {'Cookie': `JSESSIONID=${jsessionid}`}
     this.url = "http://navecunha.nuvemdatacom.com.br:9665/mge/service.sbr?serviceName=CRUDServiceProvider.loadRecords&outputType=json"
     this.codigoEndereco = codigoEndereco
-    this.body = {"serviceName": "CRUDServiceProvider.loadRecords","requestBody": {"dataSet": {"rootEntity": "Endereco","includePresentationFields": "S","offsetPage": "0","criteria": {
-                  "expression": {"$": "this.CODEND = " + codigoEndereco }},"entity": {"fieldset": {"list": "CODEND,NOMEEND,TIPO,CODLOGRADOURO"}}}}}
+    this.body = null
   }
 
   getHeaders() {
@@ -25,6 +24,16 @@ class EnderecoService {
 
   getBody() {
     return this.body
+  }
+
+  setCodigoEndereco(newValue) {
+    this.codigoEndereco = newValue
+    this.setBody()
+  }
+
+  setBody() {
+    this.body = this.body = {"serviceName": "CRUDServiceProvider.loadRecords","requestBody": {"dataSet": {"rootEntity": "Endereco","includePresentationFields": "S","offsetPage": "0","criteria": {
+                             "expression": {"$": "this.CODEND = " + this.getCodigoEndereco() }},"entity": {"fieldset": {"list": "CODEND,NOMEEND,TIPO,CODLOGRADOURO"}}}}}
   }
 
   async searchEnderecoByCodigo() {

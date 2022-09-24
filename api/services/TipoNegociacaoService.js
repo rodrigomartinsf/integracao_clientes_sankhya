@@ -7,8 +7,11 @@ class TipoNegociacaoService {
     this.headers = {'Cookie': `JSESSIONID=${jsessionid}`}
     this.url = "http://navecunha.nuvemdatacom.com.br:9665/mge/service.sbr?serviceName=CRUDServiceProvider.loadRecords&outputType=json"
     this.codigoParceiro = codigoParceiro
-    this.body = {"serviceName": "CRUDServiceProvider.loadRecords","requestBody": {"dataSet": {"rootEntity": "ComplementoParc","includePresentationFields": "N","offsetPage": "0","criteria": {
-                  "expression": {"$": "this.CODPARC = " + codigoParceiro}},"entity": {"fieldset": {"list": "SUGTIPNEGSAID"}}}}}
+    this.body = null
+  }
+
+  getCodigoParceiro() {
+    return this.codigoParceiro
   }
 
   getHeaders() {
@@ -19,12 +22,18 @@ class TipoNegociacaoService {
     return this.url
   }
 
-  getCodigoEndereco() {
-    return this.codigoEndereco
-  }
-
   getBody() {
     return this.body
+  }
+
+  setCodigoParceiro(newValue) {
+    this.codigoParceiro = newValue
+    this.setBody()
+  }
+
+  setBody() {
+    this.body = {"serviceName": "CRUDServiceProvider.loadRecords","requestBody": {"dataSet": {"rootEntity": "ComplementoParc","includePresentationFields": "N","offsetPage": "0","criteria": {
+                  "expression": {"$": "this.CODPARC = " + this.getCodigoParceiro()}},"entity": {"fieldset": {"list": "SUGTIPNEGSAID"}}}}}
   }
 
   async searchTipoNegociacaoByCodigoParceiro() {

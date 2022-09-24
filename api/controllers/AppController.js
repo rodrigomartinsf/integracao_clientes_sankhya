@@ -1,19 +1,20 @@
-const AuthService = require('../services/AuthService')
 const ClienteController = require('./ClienteController')
+const AuthController = require('./AuthController')
 
 class AppController {
 
   constructor() {
-    this.start()
     this.jsessionId = null
     this.clienteController = null
+    this.authController = new AuthController()
+    this.start()
   }
-
+  
   async start() {
-    this.jsessionId = await AuthService.logon()
+    this.jsessionId = await this.authController.logon()
     this.clienteController = new ClienteController(this.jsessionId)
     await this.clienteController.sendClientesToDatabase()
-    await AuthService.logout()
+    await this.authController.logout()
   }
 }
 

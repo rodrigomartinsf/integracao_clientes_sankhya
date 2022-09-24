@@ -1,8 +1,9 @@
 const ClienteService = require('../services/ClienteService')
-const EnderecoService = require('../services/EnderecoService')
-const TipoNegociacaoService = require('../services/TipoNegociacaoService')
 const ClienteSchema = require('../schemas/ClienteSchema')
 const CidadeController = require('./CidadeController')
+const EnderecoController = require('./EnderecoController')
+const TipoNegociacaoController = require('./TipoNegociacaoController')
+
 const db = require('../models')
 
 class ClienteController {
@@ -11,6 +12,8 @@ class ClienteController {
     this.jsessionId = jsessionId
     this.clienteService = new ClienteService(jsessionId)
     this.cidadeController = new CidadeController(jsessionId)
+    this.enderecoController = new EnderecoController(jsessionId)
+    this.tipoNegociacaoController = new TipoNegociacaoController(jsessionId)
   }
 
   async pegaListaDeClientes() {
@@ -70,13 +73,13 @@ class ClienteController {
 
     //Busca o endereço de cada cliente
     let enderecoId = clienteSchema.getEndereco()
-    const enderecoService = new EnderecoService(this.jsessionId, enderecoId)
-    let enderecoDescricao = await enderecoService.searchEnderecoByCodigo()
+    this.enderecoController.setEnderecoId(enderecoId)
+    let enderecoDescricao = await this.enderecoController.getEnderecoById()
     clienteSchema.setEndereco(enderecoDescricao)
     
     //Busca o tipo de negociação de cada cliente
-    const tipoNegociacaoService = new TipoNegociacaoService(this.jsessionId, clienteSchema.getCodigoParceiro())
-    const tipoNegociacaoDescricao = await tipoNegociacaoService.searchTipoNegociacaoByCodigoParceiro()
+    this.tipoNegociacaoController.setCodigoParceiro(clienteSchema.getCodigoParceiro())
+    const tipoNegociacaoDescricao = await this.tipoNegociacaoController.getTipoNegociacao()
     clienteSchema.setPrazo(tipoNegociacaoDescricao)
     return clienteSchema
   }

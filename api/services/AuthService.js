@@ -25,8 +25,7 @@ class AuthService {
       const res = await axios.post(this.urlLogin, this.bodyLogin, { withCredentials: true })
       const jsessionid = res.data.responseBody.jsessionid.$
       this.setSessionId(jsessionid)
-      //console.log('Logado!', res.data)
-    return jsessionid
+      return jsessionid
     } catch (error) {
       console.log('Erro de conexão com a API!')
     }
@@ -46,4 +45,4 @@ class AuthService {
 
 }
 
-module.exports = new AuthService()
+module.exports = AuthService
