@@ -3,6 +3,10 @@ const ClienteSchema = require('../schemas/ClienteSchema')
 const CidadeController = require('./CidadeController')
 const EnderecoController = require('./EnderecoController')
 const TipoNegociacaoController = require('./TipoNegociacaoController')
+const TabelaPrecoController = require('./TabelaPrecoController')
+const RotaController = require('./RotaController')
+
+const RabbitmqServer = require('../rabbitmq/rabbitmqServer')
 
 const db = require('../models')
 
@@ -36,6 +40,10 @@ class ClienteController {
 
         //Busca a cidade, bairro, endereço, tabela de preço e tipo de negociação de cada cliente e altera no schema
         clienteSchema = await this.setDados(clienteSchema)
+
+        const rabbitmq = new RabbitmqServer()
+        await rabbitmq.start()
+        await rabbitmq.publishInQueue('clientes', JSON.stringify(clienteSchema))
         
         //Verifica se o cliente foi encontado no banco de dados. 
         //Caso já tenha o cliente cadastrado faz o Update
@@ -46,12 +54,14 @@ class ClienteController {
             }
           })
           console.log(listaClientes[i].nome_parceiro)
+          
         }
         //Caso contrário, Cadastra o cliente
         else{
           await db.clientes.create(clienteSchema)
           console.log('Novo cliente Cadastrado', clienteSchema.getNomeParceiro())
         }
+        await rabbitmq.close()
       }
     } catch (error) {
         console.log('Erro ao recuperar os clientes da API do Sankhya')
@@ -79,8 +89,22 @@ class ClienteController {
     
     //Busca o tipo de negociação de cada cliente
     this.tipoNegociacaoController.setCodigoParceiro(clienteSchema.getCodigoParceiro())
-    const tipoNegociacaoDescricao = await this.tipoNegociacaoController.getTipoNegociacao()
-    clienteSchema.setPrazo(tipoNegociacaoDescricao)
+    const tipoNegociacaoId = await this.tipoNegociacaoController.getTipoNegociacao()
+    clienteSchema.setPrazo(tipoNegociacaoId)
+
+    //Busca o código da Rota do Vendas Externas
+    const rota = await RotaController.getRotaIdVendasExternas(clienteSchema.getRotaId())
+    clienteSchema.setRotaIdVendasExternas(rota.id_rota_ve)
+
+    //Busca o código da tabela de preço do Vendas Externas
+    const tabelaPreco = await TabelaPrecoController.getTabelaPrecoIdVendasExternas(clienteSchema.getTabelaPreco())
+    clienteSchema.setTabelaPrecoVendasExternas(tabelaPreco.id_tabela_preco_ve)
+
+    //Busca o código da forma de pagamento e condição de pagamento do Vendas Externas
+    const tipoNegociacao = await this.tipoNegociacaoController.getTipoNegociacaoIdVendasExternas(tipoNegociacaoId)
+    clienteSchema.setFormaPagamentoIdVendasExternas(tipoNegociacao.id_forma_pagamento_ve)
+    clienteSchema.setCondicaoPagamentoIdVendasExternas(tipoNegociacao.id_condicao_pagamento_ve)
+    
     return clienteSchema
   }
 }

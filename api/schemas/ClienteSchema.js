@@ -11,13 +11,17 @@ class ClienteController{
     this.inscricao_estadual = inscricao_estadual
     this.data_nascimento = data_nascimento
     this.rotaId = rotaId
+    this.rotaIdVendasExternas = null
     this.prazo = prazo
+    this.formaPagamentoIdVendasExternas = null
+    this.condicaoPagamentoIdVendasExternas = null
     this.cep = cep
     this.complemento = complemento
     this.bairro = bairro
     this.cidade = cidade
     this.estado = null
     this.tabela_preco = tabela_preco
+    this.tabelaPrecoVendasExternas = null
     this.bloquear = bloquear
     this.ativo = ativo
     this.endereco = endereco
@@ -59,8 +63,20 @@ class ClienteController{
     return this.rotaId
   }
 
+  getRotaIdVendasExternas() {
+    return this.rotaIdVendasExternas
+  }
+
   getPrazo() {
     return this.prazo
+  }
+
+  getFormaPagamentoIdVendasExternas() {
+    return this.formaPagamentoIdVendasExternas
+  }
+
+  getCondicaoPagamentoIdVendasExternas() {
+    return this.condicaoPagamentoIdVendasExternas
   }
 
   getCep() {
@@ -85,6 +101,10 @@ class ClienteController{
 
   getTabelaPreco() {
     return this.tabela_preco
+  }
+
+  getTabelaPrecoVendasExternas() {
+    return this.tabelaPrecoVendasExternas
   }
 
   getBloquear() {
@@ -145,8 +165,20 @@ setRotaId(newValue) {
   this.rotaId = newValue
 }
 
+setRotaIdVendasExternas(newValue) {
+  this.rotaIdVendasExternas = newValue
+}
+
 setPrazo(newValue) {
   this.prazo = newValue
+}
+
+setFormaPagamentoIdVendasExternas(newValue) {
+  this.formaPagamentoIdVendasExternas = newValue
+}
+
+setCondicaoPagamentoIdVendasExternas(newValue) {
+  this.condicaoPagamentoIdVendasExternas = newValue
 }
 
 setCep(newValue) {
@@ -171,6 +203,10 @@ setEstado(newValue) {
 
 setTabelaPreco(newValue) {
   this.tabela_preco = newValue
+}
+
+setTabelaPrecoVendasExternas(newValue) {
+  this.tabelaPrecoVendasExternas = newValue
 }
 
 setBloquear(newValue) {

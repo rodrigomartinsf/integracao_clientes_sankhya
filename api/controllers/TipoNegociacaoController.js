@@ -1,4 +1,5 @@
 const TipoNegociacaoService = require('../services/TipoNegociacaoService')
+const db = require('../models')
 
 class TipoNegociacaoController {
 
@@ -20,6 +21,11 @@ class TipoNegociacaoController {
     this.tipoNegociacaoService.setCodigoParceiro(this.getCodigoParceiro())
     const tipoNegociacaoDescricao = await this.tipoNegociacaoService.searchTipoNegociacaoByCodigoParceiro()
     return tipoNegociacaoDescricao
+  }
+
+  async getTipoNegociacaoIdVendasExternas(id) {
+    const tipoNegociacao = await db.tipo_negociacao.findOne({ where: { id_forma_pagamento_sankhya: id } })
+    return tipoNegociacao
   }
 
 }
